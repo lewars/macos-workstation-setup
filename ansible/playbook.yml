@@ -15,6 +15,7 @@
         - name: Install Homebrew
           ansible.builtin.shell:
             cmd: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            become: yes
         - community.general.homebrew:
             name: '{{ item }}'
             state: present
