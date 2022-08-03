@@ -21,7 +21,7 @@ venv-deps: venv
 
 setup: venv-deps
 	source venv/bin/activate && \
-		ansible-playbook -i ansible/inventory --ask-become-pass ansible/playbook.yml
+		ansible-playbook -i ansible/inventory ansible/playbook.yml
 .PHONY: setup
 
 test:
