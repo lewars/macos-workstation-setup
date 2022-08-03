@@ -2,6 +2,10 @@
 - hosts: foo
   connection: local
   gather_facts: yes
+  vars_prompt:
+    - name: password
+      prompt: password:
+      private: yes
   tasks:
     - name: Get OS Version
       debug: msg="{{ ansible_distribution }}"
@@ -14,8 +18,7 @@
     - block:
         - name: Install Homebrew
           ansible.builtin.shell:
-            cmd: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          become: yes
+            cmd: echo -e "\n{{password}}" | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         - community.general.homebrew:
             name: '{{ item }}'
             state: present
