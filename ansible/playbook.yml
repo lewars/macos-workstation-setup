@@ -18,7 +18,7 @@
     - block:
         - name: Install Homebrew
           ansible.builtin.shell:
-            cmd: echo -e "\n{{ password }}" | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            cmd: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         - community.general.homebrew:
             name: '{{ item }}'
             state: present
