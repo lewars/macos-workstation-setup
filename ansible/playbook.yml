@@ -1,0 +1,81 @@
+---
+- hosts: foo
+  connection: local
+  gather_facts: yes
+
+  tasks:
+    - name: Get OS Version
+      debug: msg="{{ ansible_distribution }}"
+
+    - name: Create local bin directory
+      file:
+        path: "{{ ansible_env.HOME }}/bin"
+        owner: "{{ ansible_env.USER }}"
+        state: directory
+        mode: '0755'
+
+    - block:
+      - community.general.homebrew:
+          name: "{{ item }}"
+          state: present
+        loop:
+          - argocd
+          - bash
+          - bash-completion@2
+          - coreutils
+          - docker-compose
+          - emacs
+          - findutils
+          - gawk
+          - gh
+          - git
+          - git-lfs
+          - gnu-sed
+          - gnutls
+          - go
+          - gradle
+          - grep
+          - groovy
+          - helm
+          - htop
+          - ispell
+          - iterm2
+          - jenkins-lts
+          - jira-cli
+          - jq
+          - jupyterlab
+          - kube-ps1
+          - kubectx
+          - kubernetes-cli
+          - kustomize
+          - loopback
+          - macfuse
+          - maven
+          - minikube
+          - ncurses
+          - nmap
+          - node
+          - openjdk
+          - openjdk@11
+          - openjdk@8
+          - openssl@1.1
+          - p11-kit
+          - packer
+          - pkg-config
+          - pnpm
+          - pstree
+          - python@3.10
+          - qemu
+          - shellcheck
+          - shfmt
+          - six
+          - snappy
+          - sqlite
+          - telnet
+          - terraform
+          - tree
+          - virtualenv
+          - vlc
+          - watch
+          - xz
+          - yarn
