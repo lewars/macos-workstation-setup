@@ -18,7 +18,7 @@
           become: yes
         - name: Install Homebrew
           ansible.builtin.shell:
-            cmd: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            cmd: hash brew 2>/dev/null || NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         - name: Tap Jira CLI repository
           community.general.homebrew_tap:
             name: ankitpokhrel/jira-cli
