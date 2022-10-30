@@ -140,15 +140,15 @@
             state: present
             name: homebrew/cask/iterm2
           when: itermdir.rc != 0
-        - name: Check if macfuse is installed
-          ansible.builtin.command:
-            cmd: brew info macfuse >/dev/null
-          register: macfuseinfo
-          ignore_errors: yes
-        - community.general.homebrew:
-            state: present
-            name: homebrew/cask/macfuse
-          when: macfuseinfo.rc != 0
+        # - name: Check if macfuse is installed
+        #   ansible.builtin.command:
+        #     cmd: brew info macfuse >/dev/null
+        #   register: macfuseinfo
+        #   ignore_errors: yes
+        # - community.general.homebrew:
+        #     state: present
+        #     name: homebrew/cask/macfuse
+        #   when: macfuseinfo.rc != 0
         - name: Check if VLC is installed
           ansible.builtin.command:
             cmd: brew info vlc >/dev/null
