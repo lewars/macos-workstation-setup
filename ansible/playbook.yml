@@ -56,7 +56,6 @@
               - helm
               - htop
               - ispell
-              - homebrew/cask/iterm2
               - jenkins-lts
               - jira-cli
               - jq
@@ -66,7 +65,6 @@
               - kubernetes-cli
               - kustomize
               - loopback
-              - homebrew/cask/macfuse
               - maven
               - minikube
               - ncurses
@@ -92,7 +90,6 @@
               - terraform
               - tree
               - virtualenv
-              - homebrew/cask/vlc
               - watch
               - xz
               - yarn
@@ -135,6 +132,29 @@
             register: intelljdir
         - community.general.homebrew:
             state: present
-            update_homebrew: true
             name: homebrew/cask/intellij-idea
           when: intelljdir.rc == 0
+        - name: Check if iTerm is installed
+          ansible.builtin.command:
+            cmd: test -d /Applications/iTerm.app
+            register: itermdir
+        - community.general.homebrew:
+            state: present
+            name: homebrew/cask/iterm2
+          when: itermdir.rc == 0
+        - name: Check if macuse is installed
+          ansible.builtin.command:
+            cmd: brew info macfuse >/dev/null
+            register: macfuseinfo
+        - community.general.homebrew:
+            state: present
+            name: - homebrew/cask/macfuse
+          when: macfuseinfo.rc == 0
+        - name: Check if VLC is installed
+          ansible.builtin.command:
+            cmd: brew info vlc >/dev/null
+            register: vlcinfo
+        - community.general.homebrew:
+            state: present
+            name: homebrew/cask/vlc
+          when: vlcinfo.rc == 0
