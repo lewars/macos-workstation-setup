@@ -92,6 +92,7 @@
               - watch
               - xz
               - yarn
+          when: 0 > 1
         - name: Clone dotfile repo
           ansible.builtin.git:
             repo: https://github.com/lewars/dotfiles.git
@@ -99,7 +100,7 @@
             update: yes
         - name: Install dot file
           ansible.builtin.command:
-            cmd: install.sh
+            cmd: ./install.sh
             chdir: '{{ ansible_env.HOME }}/git/dotfiles'
             creates: '{{ ansible_env.HOME }}/.emacs'
         - name: Create a tmp dir in home directory
