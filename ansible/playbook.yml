@@ -2,10 +2,6 @@
 - hosts: foo
   connection: local
   gather_facts: yes
-  vars_prompt:
-    - name: password
-      prompt: password
-      private: yes
   tasks:
     - name: Get OS Version
       debug: msg="{{ ansible_distribution }}"
