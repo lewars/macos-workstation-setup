@@ -109,7 +109,7 @@
             state: directory
             mode: "0700"
         - name: Download gcloud sdk
-          ansible.builtin.get_url:
+          ansible.builtin.unarchive:
             url: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-407.0.0-darwin-x86_64.tar.gz
             dest: '{{ ansible_env.HOME }}/tmp'
         - name: Escalate priviledge for gcloud sdk installation
