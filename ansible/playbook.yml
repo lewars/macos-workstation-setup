@@ -102,4 +102,4 @@
         - name: Install dot file
           ansible.builtin.command: install.sh
           chdir: "{{ ansible_env.HOME }}"/git/dotfiles
-          creates: "{{ ansible_env.HOME }}"/.emacs
+          creates: "{{ ansible_env.HOME }}/.emacs"
