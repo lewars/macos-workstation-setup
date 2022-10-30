@@ -126,6 +126,7 @@
           ansible.builtin.command:
             cmd: test -d /Applications/IntelliJ\ IDEA.app
           register: intelljdir
+          ignore_errors: yes
         - community.general.homebrew:
             state: present
             name: homebrew/cask/intellij-idea
@@ -134,6 +135,7 @@
           ansible.builtin.command:
             cmd: test -d /Applications/iTerm.app
           register: itermdir
+          ignore_errors: yes
         - community.general.homebrew:
             state: present
             name: homebrew/cask/iterm2
@@ -142,6 +144,7 @@
           ansible.builtin.command:
             cmd: brew info macfuse >/dev/null
           register: macfuseinfo
+          ignore_errors: yes
         - community.general.homebrew:
             state: present
             name: homebrew/cask/macfuse
@@ -150,6 +153,7 @@
           ansible.builtin.command:
             cmd: brew info vlc >/dev/null
           register: vlcinfo
+          ignore_errors: yes
         - community.general.homebrew:
             state: present
             name: homebrew/cask/vlc
@@ -158,6 +162,7 @@
           ansible.builtin.command:
             cmd: test -d /Applications/Loopback.app
           register: loopbackdir
+          ignore_errors: yes
         - community.general.homebrew:
             state: present
             name: loopback
