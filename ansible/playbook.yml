@@ -23,20 +23,26 @@
           community.general.homebrew_tap:
             name: ankitpokhrel/jira-cli
             state: present
+        - name: Tap emacs repository
+          community.general.homebrew_tap:
+            name: railwaycat/emacsmacport
+            state: present
         - community.general.homebrew:
             state: latest
             name:
               - argocd
+              - awscli
               - bash
               - bash-completion@2
               - coreutils
               - docker-compose
-              - emacs
+              - homebrew/cask/emacs
               - findutils
               - gawk
               - gh
               - git
               - git-lfs
+              - homebrew/cask/google-cloud-sdk
               - gnu-sed
               - gnutls
               - go
@@ -46,6 +52,7 @@
               - helm
               - htop
               - ispell
+              - homebrew/cask/intellij-idea
               - homebrew/cask/iterm2
               - jenkins-lts
               - jira-cli
@@ -87,3 +94,12 @@
               - xz
               - yarn
           update_homebrew: true
+        - name: Clone dotfile repo
+          ansible.builtin.git:
+            repo: https://github.com/lewars/dotfiles.git
+            dest: "{{ ansible_env.HOME }}"/git/dotfiles
+            update: yes
+        - name: Install dot file
+          ansible.builtin.command: install.sh
+          chdir: "{{ ansible_env.HOME }}"/git/dotfiles
+          creates: "{{ ansible_env.HOME }}"/.emacs
