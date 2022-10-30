@@ -27,6 +27,10 @@
           community.general.homebrew_tap:
             name: railwaycat/emacsmacport
             state: present
+        - name: Escalate priviledge for brew
+          ansible.builtin.command:
+            cmd: /usr/bin/true
+          become: yes
         - community.general.homebrew:
             state: latest
             update_homebrew: true
@@ -105,9 +109,10 @@
             creates: '{{ ansible_env.HOME }}/.emacs'
         - name: Create a tmp dir in home directory
           ansible.builtin.file:
-            file: '{{ ansible_env.HOME }}/tmp'
-            type: directory
-            state: present
+            file:
+              path: '{{ ansible_env.HOME }}/tmp'
+              state: directory
+              mode: "0700"
         - name: Download gcloud sdk
           ansible.builtin.get_url:
             url: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-407.0.0-darwin-x86_64.tar.gz
