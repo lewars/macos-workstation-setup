@@ -151,7 +151,7 @@
         #   when: macfuseinfo.rc != 0
         - name: Check if VLC is installed
           ansible.builtin.command:
-            cmd: brew info vlc >/dev/null
+            cmd: test -d /Applications/VLC.app
           register: vlcinfo
           ignore_errors: yes
         - community.general.homebrew:
