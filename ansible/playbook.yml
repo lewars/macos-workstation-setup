@@ -56,7 +56,6 @@
               - helm
               - htop
               - ispell
-              - homebrew/cask/intellij-idea
               - homebrew/cask/iterm2
               - jenkins-lts
               - jira-cli
@@ -130,3 +129,12 @@
               - --path-update true
               - --additional-components kubectl
               - -q
+        - name: Check if IntelliJ is installed
+          ansible.builtin.command:
+            cmd: test -d /Applications/IntelliJ\ IDEA.app
+            register: intelljdir
+        - community.general.homebrew:
+            state: present
+            update_homebrew: true
+            name: homebrew/cask/intellij-idea
+          when: intelljdir.rc == 0
