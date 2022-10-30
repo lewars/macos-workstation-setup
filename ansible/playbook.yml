@@ -29,6 +29,7 @@
             state: present
         - community.general.homebrew:
             state: latest
+            update_homebrew: true
             name:
               - argocd
               - awscli
@@ -93,7 +94,6 @@
               - watch
               - xz
               - yarn
-          update_homebrew: true
         - name: Clone dotfile repo
           ansible.builtin.git:
             repo: https://github.com/lewars/dotfiles.git
