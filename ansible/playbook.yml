@@ -97,9 +97,9 @@
         - name: Clone dotfile repo
           ansible.builtin.git:
             repo: https://github.com/lewars/dotfiles.git
-            dest: "{{ ansible_env.HOME }}"/git/dotfiles
+            dest: '{{ ansible_env.HOME }}/git/dotfiles'
             update: yes
         - name: Install dot file
           ansible.builtin.command: install.sh
-          chdir: "{{ ansible_env.HOME }}"/git/dotfiles
-          creates: "{{ ansible_env.HOME }}/.emacs"
+          chdir: '{{ ansible_env.HOME }}/git/dotfiles'
+          creates: '{{ ansible_env.HOME }}/.emacs'
