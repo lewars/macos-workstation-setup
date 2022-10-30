@@ -49,6 +49,7 @@
               - git-lfs
               - gnu-sed
               - gnutls
+              - gunzip
               - go
               - gradle
               - grep
@@ -124,7 +125,7 @@
         - name: Check if IntelliJ is installed
           ansible.builtin.command:
             cmd: test -d /Applications/IntelliJ\ IDEA.app
-            register: intelljdir
+          register: intelljdir
         - community.general.homebrew:
             state: present
             name: homebrew/cask/intellij-idea
@@ -132,7 +133,7 @@
         - name: Check if iTerm is installed
           ansible.builtin.command:
             cmd: test -d /Applications/iTerm.app
-            register: itermdir
+          register: itermdir
         - community.general.homebrew:
             state: present
             name: homebrew/cask/iterm2
@@ -140,7 +141,7 @@
         - name: Check if macfuse is installed
           ansible.builtin.command:
             cmd: brew info macfuse >/dev/null
-            register: macfuseinfo
+          register: macfuseinfo
         - community.general.homebrew:
             state: present
             name: homebrew/cask/macfuse
@@ -148,7 +149,7 @@
         - name: Check if VLC is installed
           ansible.builtin.command:
             cmd: brew info vlc >/dev/null
-            register: vlcinfo
+          register: vlcinfo
         - community.general.homebrew:
             state: present
             name: homebrew/cask/vlc
@@ -156,7 +157,7 @@
         - name: Check if Loopback is installed
           ansible.builtin.command:
             cmd: test -d /Applications/Loopback.app
-            register: loopbackdir
+          register: loopbackdir
         - community.general.homebrew:
             state: present
             name: loopback
