@@ -105,10 +105,9 @@
             creates: '{{ ansible_env.HOME }}/.emacs'
         - name: Create a tmp dir in home directory
           ansible.builtin.file:
-            file:
-              path: '{{ ansible_env.HOME }}/tmp'
-              state: directory
-              mode: "0700"
+            path: '{{ ansible_env.HOME }}/tmp'
+            state: directory
+            mode: "0700"
         - name: Download gcloud sdk
           ansible.builtin.get_url:
             url: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-407.0.0-darwin-x86_64.tar.gz
