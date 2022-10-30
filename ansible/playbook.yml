@@ -28,7 +28,7 @@
             name: railwaycat/emacsmacport
             state: present
         - name: Escalate priviledge for brew
-          ansible.builtin.community:
+          ansible.builtin.command:
             cmd: /usr/bin/true
             become: yes
         - community.general.homebrew:
