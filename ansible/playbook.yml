@@ -112,6 +112,7 @@
           ansible.builtin.unarchive:
             src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-407.0.0-darwin-x86_64.tar.gz
             dest: '{{ ansible_env.HOME }}/tmp'
+            remote_src: yes
         - name: Escalate priviledge for gcloud sdk installation
           ansible.builtin.command:
             cmd: /usr/bin/true
