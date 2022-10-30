@@ -120,7 +120,7 @@
         - name: Install gcloud cli
           ansible.builtin.command:
             cmd: '{{ ansible_env.HOME }}/tmp/google-cloud-sdk/install.sh --usage-reporting false --bash-completion true --path-update true --additional-components kubectl -q'
-        when: 0 > 1
+          when: 0 > 1
         - name: Check if IntelliJ is installed
           ansible.builtin.command:
             cmd: test -d /Applications/IntelliJ\ IDEA.app
