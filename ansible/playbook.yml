@@ -43,7 +43,6 @@
               - gh
               - git
               - git-lfs
-              - homebrew/cask/google-cloud-sdk
               - gnu-sed
               - gnutls
               - go
