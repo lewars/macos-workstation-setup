@@ -37,7 +37,7 @@
               - bash-completion@2
               - coreutils
               - docker-compose
-              - homebrew/cask/emacs
+              - emacs-mac
               - findutils
               - gawk
               - gh
