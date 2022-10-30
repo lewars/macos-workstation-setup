@@ -16,6 +16,10 @@
         state: directory
         mode: "0755"
     - block:
+        - name: Escalate priviledge for brew
+          ansible.builtin.command:
+            cmd: /usr/bin/true
+            become: yes
         - name: Install Homebrew
           ansible.builtin.shell:
             cmd: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -27,10 +31,6 @@
           community.general.homebrew_tap:
             name: railwaycat/emacsmacport
             state: present
-        - name: Escalate priviledge for brew
-          ansible.builtin.command:
-            cmd: /usr/bin/true
-            become: yes
         - community.general.homebrew:
             state: latest
             update_homebrew: true
