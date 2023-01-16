@@ -51,6 +51,7 @@
               - gnutls
               - gunzip
               - go
+              - google-chrome
               - gradle
               - grep
               - groovy
