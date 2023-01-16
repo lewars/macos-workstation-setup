@@ -27,6 +27,16 @@
           community.general.homebrew_tap:
             name: railwaycat/emacsmacport
             state: present
+        - name: Check if Google Chrome is installed
+          ansible.builtin.command:
+            cmd: test -d /Applications/Google\ Chrome.app
+          register: googlechromedir
+          ignore_errors: yes
+        - community.general.homebrew:
+            state: present
+            name: homebrew/cask/google-chrome
+          when: googlechromedir.rc != 0
+          ignore_errors: yes
         - community.general.homebrew:
             state: latest
             update_homebrew: true
@@ -37,7 +47,6 @@
               - git
               - gnu-sed
               - gnu-tar
-              - google-chrome
               - ispell
               - jq
               - unzip
