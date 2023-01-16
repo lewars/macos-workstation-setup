@@ -5,7 +5,7 @@ install-brew:
 		"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 venv:
-	hash pip || sudo brew install python3-pip
+	hash pip || brew install python3-pip
 	python3 -m pip install --user virtualenv
 	python3 -m virtualenv $@
 
