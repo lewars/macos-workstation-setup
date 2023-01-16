@@ -35,6 +35,12 @@
             state: latest
             update_homebrew: true
             name:
+              - unzip
+              - gtar
+        - community.general.homebrew:
+            state: latest
+            update_homebrew: true
+            name:
               - argocd
               - awscli
               - bash
