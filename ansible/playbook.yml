@@ -36,7 +36,7 @@
             update_homebrew: true
             name:
               - unzip
-              - gtar
+              - gun-tar
         - community.general.homebrew:
             state: latest
             update_homebrew: true
