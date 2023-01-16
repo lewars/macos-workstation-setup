@@ -31,8 +31,18 @@
             state: latest
             update_homebrew: true
             name:
-              - unzip
+              - bash
+              - bash-completion@2
+              - emacs-mac
+              - findutils
+              - git
+              - git-lfs
+              - gnu-sed
               - gnu-tar
+              - google-chrome
+              - ispell
+              - jq
+              - unzip
         - community.general.homebrew:
             state: latest
             update_homebrew: true

@@ -17,7 +17,7 @@ venv-deps: install-brew venv
 
 setup: install-brew venv-deps
 	source venv/bin/activate && \
-		ansible-playbook -i ansible/inventory -v --become-password-file ~/.become.txt ansible/playbook.yml
+		ansible-playbook -i ansible/inventory -vv --become-password-file ~/.become.txt ansible/playbook.yml
 .PHONY: setup
 
 test:
