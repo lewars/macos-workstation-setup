@@ -49,12 +49,13 @@
               - git-lfs
               - gnu-sed
               - gnutls
-              - gunzip
               - go
               - google-chrome
               - gradle
               - grep
               - groovy
+              - gtar
+              - gunzip
               - helm
               - htop
               - ispell
@@ -90,11 +91,11 @@
               - telnet
               - terraform
               - tree
+              - unzip
               - virtualenv
               - watch
               - xz
               - yarn
-          when: 0 > 1
         - name: Clone dotfile repo
           ansible.builtin.git:
             repo: https://github.com/lewars/dotfiles.git
