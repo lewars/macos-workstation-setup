@@ -96,6 +96,7 @@
               - watch
               - xz
               - yarn
+          when: 0 > 1
         - name: Clone dotfile repo
           ansible.builtin.git:
             repo: https://github.com/lewars/dotfiles.git
@@ -119,7 +120,6 @@
         - name: Install gcloud cli
           ansible.builtin.command:
             cmd: '{{ ansible_env.HOME }}/bin/google-cloud-sdk/install.sh --usage-reporting false --bash-completion true --path-update true --additional-components kubectl -q'
-          when: 0 < 1
         - name: Check if IntelliJ is installed
           ansible.builtin.command:
             cmd: test -d /Applications/IntelliJ\ IDEA.app
