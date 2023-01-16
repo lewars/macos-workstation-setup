@@ -27,10 +27,6 @@
           community.general.homebrew_tap:
             name: railwaycat/emacsmacport
             state: present
-        - name: Escalate priviledge for brew
-          ansible.builtin.command:
-            cmd: /usr/bin/true
-          become: yes
         - community.general.homebrew:
             state: latest
             update_homebrew: true
@@ -135,6 +131,7 @@
             state: present
             name: homebrew/cask/intellij-idea
           when: intelljdir.rc != 0
+          ignore_errors: yes
         - name: Check if iTerm is installed
           ansible.builtin.command:
             cmd: test -d /Applications/iTerm.app
@@ -144,6 +141,7 @@
             state: present
             name: homebrew/cask/iterm2
           when: itermdir.rc != 0
+          ignore_errors: yes
         # - name: Check if macfuse is installed
         #   ansible.builtin.command:
         #     cmd: brew info macfuse >/dev/null
