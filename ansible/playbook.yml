@@ -160,12 +160,15 @@
             state: present
             name: homebrew/cask/vlc
           when: vlcinfo.rc != 0
+          ignore_errors: yes
         - name: Check if Loopback is installed
           ansible.builtin.command:
             cmd: test -d /Applications/Loopback.app
           register: loopbackdir
+          when: vlcinfo.rc != 0
           ignore_errors: yes
         - community.general.homebrew:
             state: present
             name: loopback
           when: loopbackdir.rc != 0
+          ignore_errors: yes
