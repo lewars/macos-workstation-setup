@@ -1,15 +1,7 @@
 # macos-workstation Makefile
-PKR_HCL=workstation.pkr.hcl
-
-validate:
-	packer validate $(PKR_HCL)
-.PHONY: validate
-
-build: validate
-	packer build --force $(PKR_HCL)
-.PHONY: build
 
 venv:
+	hash pip || sudo dnf install -y python3-pip
 	python3 -m pip install --user virtualenv
 	python3 -m virtualenv $@
 
@@ -21,16 +13,12 @@ venv-deps: venv
 
 setup: venv-deps
 	source venv/bin/activate && \
-		ansible-playbook -i ansible/inventory -v -K ansible/playbook.yml
+		ansible-playbook -i ansible/inventory -K -v ansible/playbook.yml
 .PHONY: setup
 
 test:
 	true # work in progress
 .PHONY: test
-
-setup-vm:
-	vagrant up
-.PHONY: setup
 
 clean:
 	rm -fr venv
