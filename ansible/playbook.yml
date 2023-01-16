@@ -107,22 +107,18 @@
             creates: '{{ ansible_env.HOME }}/.emacs'
         - name: Create a tmp dir in home directory
           ansible.builtin.file:
-            path: '{{ ansible_env.HOME }}/tmp'
+            path: '{{ ansible_env.HOME }}/bin'
             state: directory
             mode: "0700"
         - name: Download and install gcloud sdk
           ansible.builtin.unarchive:
-            src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-407.0.0-darwin-x86_64.tar.gz
-            dest: '{{ ansible_env.HOME }}/tmp'
+            src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-413.0.0-darwin-arm.tar.gz
+            dest: '{{ ansible_env.HOME }}/bin'
             remote_src: yes
-        - name: Escalate priviledge for gcloud sdk installation
+        - name: Install gcloud cli
           ansible.builtin.command:
-            cmd: /usr/bin/true
-          become: yes
-        # - name: Install gcloud cli
-        #   ansible.builtin.command:
-        #     cmd: '{{ ansible_env.HOME }}/tmp/google-cloud-sdk/install.sh --usage-reporting false --bash-completion true --path-update true --additional-components kubectl -q'
-        #   when: 0 > 1
+            cmd: '{{ ansible_env.HOME }}/bin/google-cloud-sdk/install.sh --usage-reporting false --bash-completion true --path-update true --additional-components kubectl -q'
+          when: 0 < 1
         - name: Check if IntelliJ is installed
           ansible.builtin.command:
             cmd: test -d /Applications/IntelliJ\ IDEA.app
