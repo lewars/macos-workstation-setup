@@ -43,6 +43,7 @@
             name:
               - bash
               - bash-completion@2
+              - emacs-mac
               - findutils
               - git
               - gnu-sed
@@ -60,7 +61,6 @@
               - bash-completion@2
               - coreutils
               - docker-compose
-              - emacs-mac
               - findutils
               - gawk
               - gh
@@ -95,6 +95,7 @@
               - openjdk@11
               - openjdk@8
               - openssl@1.1
+              - pre-commit
               - p11-kit
               - packer
               - pkg-config
@@ -115,6 +116,7 @@
               - watch
               - xz
               - yarn
+              - yq
           when: 0 > 1
         - name: Clone dotfile repo
           ansible.builtin.git:
