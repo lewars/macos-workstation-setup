@@ -1,7 +1,7 @@
 ---
 - hosts: foo
   connection: local
-  gather_facts: yes
+  gather_facts: true
   tasks:
     - name: Get OS Version
       debug: msg="{{ ansible_distribution }}"
@@ -15,7 +15,7 @@
         - name: Escalate priviledge for brew
           ansible.builtin.command:
             cmd: /usr/bin/true
-          become: yes
+          become: true
         - name: Install Homebrew
           ansible.builtin.shell:
             cmd: hash brew 2>/dev/null || NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -23,6 +23,7 @@
           community.general.homebrew_tap:
             name: ankitpokhrel/jira-cli
             state: present
+          when: lookup('env', 'WS_EXTRA') is defined
         - name: Tap emacs repository
           community.general.homebrew_tap:
             name: railwaycat/emacsmacport
@@ -31,56 +32,67 @@
           ansible.builtin.command:
             cmd: test -d /Applications/Google\ Chrome.app
           register: googlechromedir
-          ignore_errors: yes
+          ignore_errors: true
         - community.general.homebrew:
             state: present
             name: homebrew/cask/google-chrome
           when: googlechromedir.rc != 0
-          ignore_errors: yes
+          ignore_errors: true
         - community.general.homebrew:
             state: latest
             update_homebrew: true
             name:
               - bash
               - bash-completion@2
+              - coreutils
               - emacs-mac
               - findutils
+              - gawk
+              - gh
               - git
               - gnu-sed
               - gnu-tar
+              - google-chrome
+              - grep
+              - gunzip
+              - htop
               - ispell
               - jq
+              - pre-commit
+              - python
+              - shellcheck
               - unzip
+              - yamllint
+              - yq
+        - community.general.homebrew:
+            state: latest
+            update_homebrew: true
+            name:
+              - awscli
+              - gh
+              - go
+              - groovy
+              - jenkins-lts
+              - nmap
+              - node
+              - openjdk
+              - openssl@1.1
+              - pnpm
+              - pstree
+              - telnet
+              - terraform
+              - unzip
+              - virtualenv
+          when: lookup('env', 'WS_PLUS') is defined
         - community.general.homebrew:
             state: latest
             update_homebrew: true
             name:
               - argocd
-              - awscli
-              - bash
-              - bash-completion@2
-              - coreutils
               - docker-compose
-              - findutils
-              - gawk
-              - gh
-              - git
               - git-lfs
-              - gnu-sed
-              - gnutls
-              - go
-              - google-chrome
               - gradle
-              - grep
-              - groovy
-              - gtar
-              - gunzip
               - helm
-              - htop
-              - ispell
-              - jenkins-lts
-              - jira-cli
-              - jq
               - jupyterlab
               - kube-ps1
               - kubectx
@@ -89,46 +101,39 @@
               - maven
               - minikube
               - ncurses
-              - nmap
-              - node
-              - openjdk
               - openjdk@11
               - openjdk@8
               - openssl@1.1
-              - pre-commit
               - p11-kit
               - packer
               - pkg-config
-              - pnpm
-              - pstree
-              - python@3.9
+              - pre-commit
               - qemu
-              - shellcheck
               - shfmt
               - six
               - snappy
               - sqlite
-              - telnet
-              - terraform
               - tree
-              - unzip
-              - virtualenv
               - watch
               - xz
               - yarn
               - yq
-          when: 0 > 1
+          when: lookup('env', 'WS_EXTRA') is defined
         - name: Clone dotfile repo
           ansible.builtin.git:
             repo: https://github.com/lewars/dotfiles.git
             dest: '{{ ansible_env.HOME }}/git/dotfiles'
-            update: yes
+            update: true
         - name: Install dot file
           ansible.builtin.command:
-            cmd: ./install.sh
+            cmd: make
             chdir: '{{ ansible_env.HOME }}/git/dotfiles'
-            creates: '{{ ansible_env.HOME }}/.emacs'
-        - name: Create a tmp dir in home directory
+            creates:
+              - '{{ ansible_env.HOME }}/.bashrc'
+              - '{{ ansible_env.HOME }}/.gitconfig'
+              - '{{ ansible_env.HOME }}/.dotfiles'
+              - '{{ ansible_env.HOME }}/.emacs'
+        - name: Create a bin dir in home directory
           ansible.builtin.file:
             path: '{{ ansible_env.HOME }}/bin'
             state: directory
@@ -137,57 +142,62 @@
           ansible.builtin.unarchive:
             src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-413.0.0-darwin-arm.tar.gz
             dest: '{{ ansible_env.HOME }}/bin'
-            remote_src: yes
+            remote_src: true
+          when: lookup('env', 'WS_EXTRA') is defined
         - name: Install gcloud cli
           ansible.builtin.command:
             cmd: '{{ ansible_env.HOME }}/bin/google-cloud-sdk/install.sh --usage-reporting false --bash-completion true --path-update true --additional-components kubectl -q'
+          when: lookup('env', 'WS_EXTRA') is defined
         - name: Check if IntelliJ is installed
           ansible.builtin.command:
             cmd: test -d /Applications/IntelliJ\ IDEA.app
           register: intelljdir
-          ignore_errors: yes
+          ignore_errors: true
+          when: lookup('env', 'WS_CODE') is defined
         - community.general.homebrew:
             state: present
             name: homebrew/cask/intellij-idea
-          when: intelljdir.rc != 0
-          ignore_errors: yes
+          when: intelljdir.rc != 0  and lookup('env', 'WS_CODE') is defined
+          ignore_errors: true
         - name: Check if iTerm is installed
           ansible.builtin.command:
             cmd: test -d /Applications/iTerm.app
           register: itermdir
-          ignore_errors: yes
+          ignore_errors: true
         - community.general.homebrew:
             state: present
             name: homebrew/cask/iterm2
           when: itermdir.rc != 0
-          ignore_errors: yes
-        # - name: Check if macfuse is installed
-        #   ansible.builtin.command:
-        #     cmd: brew info macfuse >/dev/null
-        #   register: macfuseinfo
-        #   ignore_errors: yes
-        # - community.general.homebrew:
-        #     state: present
-        #     name: homebrew/cask/macfuse
-        #   when: macfuseinfo.rc != 0
+          ignore_errors: true
+        - name: Check if macfuse is installed
+          ansible.builtin.command:
+            cmd: brew info macfuse >/dev/null
+          register: macfuseinfo
+          ignore_errors: true
+          when: lookup('env', 'WS_EXTREAM') is defined
+        - community.general.homebrew:
+            state: present
+            name: homebrew/cask/macfuse
+          when: macfuseinfo.rc != 0 and lookup('env', 'WS_EXTREAM') is defined
         - name: Check if VLC is installed
           ansible.builtin.command:
             cmd: test -d /Applications/VLC.app
           register: vlcinfo
-          ignore_errors: yes
+          ignore_errors: true
+          when: lookup('env', 'WS_EXTRA') is defined
         - community.general.homebrew:
             state: present
             name: homebrew/cask/vlc
-          when: vlcinfo.rc != 0
-          ignore_errors: yes
+          when: vlcinfo.rc != 0 and lookup('env', 'WS_EXTRA') is defined
+          ignore_errors: true
         - name: Check if Loopback is installed
           ansible.builtin.command:
             cmd: test -d /Applications/Loopback.app
           register: loopbackdir
-          when: vlcinfo.rc != 0
-          ignore_errors: yes
+          when: vlcinfo.rc != 0 and lookup('env', 'WS_EXTRA') is defined
+          ignore_errors: true
         - community.general.homebrew:
             state: present
             name: loopback
-          when: loopbackdir.rc != 0
-          ignore_errors: yes
+          when: loopbackdir.rc != 0 and lookup('env', 'WS_EXTRA') is defined
+          ignore_errors: true
