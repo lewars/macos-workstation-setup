@@ -1,5 +1,5 @@
----
-- hosts: foo
+- name: macos workstation playbook
+  hosts: foo
   connection: local
   gather_facts: true
   tasks:
@@ -68,6 +68,7 @@
             state: latest
             update_homebrew: true
             name:
+              - ansible
               - awscli
               - gh
               - go
