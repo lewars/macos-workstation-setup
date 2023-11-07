@@ -1,12 +1,12 @@
-- name: macos workstation playbook
+- name: Macos workstation playbook
   hosts: foo
   connection: local
   gather_facts: true
   tasks:
     - name: Get OS Version
-      debug: msg="{{ ansible_distribution }}"
+      ansible.builtin.debug: msg="{{ ansible_distribution }}"
     - name: Create local bin directory
-      file:
+      ansible.builtin.file:
         path: '{{ ansible_env.HOME }}/bin'
         owner: '{{ ansible_env.USER }}'
         state: directory
@@ -32,12 +32,10 @@
           ansible.builtin.command:
             cmd: test -d /Applications/Google\ Chrome.app
           register: googlechromedir
-          ignore_errors: true
         - community.general.homebrew:
             state: present
             name: homebrew/cask/google-chrome
           when: googlechromedir.rc != 0
-          ignore_errors: true
         - community.general.homebrew:
             state: latest
             update_homebrew: true
@@ -153,28 +151,24 @@
           ansible.builtin.command:
             cmd: test -d /Applications/IntelliJ\ IDEA.app
           register: intelljdir
-          ignore_errors: true
           when: lookup('env', 'WS_CODE') is defined
-        - community.general.homebrew:
+        - name: Check if Intell J is isntalled
+          community.general.homebrew:
             state: present
             name: homebrew/cask/intellij-idea
-          when: intelljdir.rc != 0  and lookup('env', 'WS_CODE') is defined
-          ignore_errors: true
+          when: intelljdir.rc != 0 and lookup('env', 'WS_CODE') is defined
         - name: Check if iTerm is installed
           ansible.builtin.command:
             cmd: test -d /Applications/iTerm.app
           register: itermdir
-          ignore_errors: true
         - community.general.homebrew:
             state: present
             name: homebrew/cask/iterm2
           when: itermdir.rc != 0
-          ignore_errors: true
         - name: Check if macfuse is installed
           ansible.builtin.command:
             cmd: brew info macfuse >/dev/null
           register: macfuseinfo
-          ignore_errors: true
           when: lookup('env', 'WS_EXTREAM') is defined
         - community.general.homebrew:
             state: present
@@ -184,21 +178,17 @@
           ansible.builtin.command:
             cmd: test -d /Applications/VLC.app
           register: vlcinfo
-          ignore_errors: true
           when: lookup('env', 'WS_EXTRA') is defined
         - community.general.homebrew:
             state: present
             name: homebrew/cask/vlc
           when: vlcinfo.rc != 0 and lookup('env', 'WS_EXTRA') is defined
-          ignore_errors: true
         - name: Check if Loopback is installed
           ansible.builtin.command:
             cmd: test -d /Applications/Loopback.app
           register: loopbackdir
           when: vlcinfo.rc != 0 and lookup('env', 'WS_EXTRA') is defined
-          ignore_errors: true
         - community.general.homebrew:
             state: present
             name: loopback
           when: loopbackdir.rc != 0 and lookup('env', 'WS_EXTRA') is defined
-          ignore_errors: true
