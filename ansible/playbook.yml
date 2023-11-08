@@ -69,7 +69,7 @@
               - gnu-sed
               - gnu-tar
               - grep
-              - gunzip
+              - gzip
               - htop
               - ispell
               - jq
