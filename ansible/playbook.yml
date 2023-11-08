@@ -53,6 +53,14 @@
             update_homebrew: true
             name: google-chrome
           when: googlechromedir.rc != 0
+        - name: Install Emacs
+          community.general.homebrew_cask:
+            name: emacs
+            state: latest
+        - name: Install Alfred
+          community.general.homebrew_cask:
+            name: alfred
+            state: latest
         - name: Install basic homebrew packages
           community.general.homebrew:
             state: latest
@@ -61,7 +69,6 @@
               - bash
               - bash-completion@2
               - coreutils
-              - emacs
               - findutils
               - gawk
               - gh
@@ -100,7 +107,8 @@
               - terraform
               - unzip
               - virtualenv
-          when: lookup('env', 'WS_PLUS') is defined
+          environment: '{{ WS_PLUS | default ({}) }}'
+          when: WS_PLUS is defined
         - name: Install extra homebrew package
           community.general.homebrew:
             state: latest
@@ -136,7 +144,8 @@
               - xz
               - yarn
               - yq
-          when: lookup('env', 'WS_EXTRA') is defined
+          environment: '{{ WS_EXTRA | default ({}) }}'
+          when: WS_EXTRA is defined
         - name: Clone dotfile repo # noqa: latest
           ansible.builtin.git:
             repo: https://github.com/lewars/dotfiles.git
@@ -160,76 +169,91 @@
           ansible.builtin.stat:
             path: /usr/bin/gcloud
           register: gcloud
+          environment: '{{ WS_EXTRA | default ({}) }}'
+          when: WS_EXTRA is defined
         - name: Download and install gcloud sdk
           ansible.builtin.unarchive:
             src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-454.0.0-linux-x86_64.tar.gz
             dest: '{{ ansible_env.HOME }}/bin'
             remote_src: true
-          when: lookup('env', 'WS_EXTRA') is defined and gcloud.stat.exists
+          environment: '{{ WS_EXTRA | default ({}) }}'
+          when: gcloud.stat.exists != true and WS_EXTRA is defined
         - name: Install gcloud cli
           ansible.builtin.command:
             cmd: '{{ ansible_env.HOME }}/bin/google-cloud-sdk/install.sh --usage-reporting false --bash-completion true --path-update true --additional-components kubectl -q' # yamllint disable-line rule:line-length
           register: gcloud_cli
           changed_when: gcloud_cli.rc != 0
-          when: lookup('env', 'WS_EXTRA') is defined
+          environment: '{{ WS_EXTRA | default ({}) }}'
+          when: WS_EXTRA is defined
         - name: Check if IntelliJ\ IDEA.app is installed
           ansible.builtin.stat:
             path: /Applications/IntelliJ\ IDEA.app
           register: intelljapp
+          environment: '{{ WS_CODE | default ({}) }}'
+          when: intelljapp != 0 and WS_CODE is defined
         - name: Check if IntelliJ is installed
           ansible.builtin.command:
             cmd: test -d /Applications/IntelliJ\ IDEA.app
           register: intelljdir
-          when: lookup('env', 'WS_CODE') is defined and intelljapp != 0
+          environment: '{{ WS_CODE | default ({}) }}'
+          when: intelljapp != 0 and WS_CODE is defined
           changed_when: intelljapp.rc != 0
         - name: Check if Intell J is isntalled
-          community.general.homebrew:
+          community.general.homebrew_cask:
             state: present
-            name: homebrew/cask/intellij-idea
-          when: intelljdir.rc != 0 and lookup('env', 'WS_CODE') is defined
+            name: intellij-idea
+          environment: '{{ WS_CODE | default ({}) }}'
+          when: intelljdir.rc != 0 and WS_CODE is defined
+          changed_when: gcloud_cli.rc != 0
         - name: Check if iTerm is installed
           ansible.builtin.command:
             cmd: test -d /Applications/iTerm.app
           register: itermdir
           changed_when: itermdir.rc != 0
         - name: Check if iterm2 is installed
-          community.general.homebrew:
+          community.general.homebrew_cask:
             state: present
-            name: homebrew/cask/iterm2
+            name: iterm2
           when: itermdir.rc != 0
         - name: Check if macfuse is installed
           ansible.builtin.command:
             cmd: brew info macfuse >/dev/null
           register: macfuseinfo
+          environment: '{{ WS_EXTREAM | default ({}) }}'
+          when: intelljdir.rc != 0 and WS_EXTREAM is defined
           changed_when: macfuseinfo.rc != 0
-          when: lookup('env', 'WS_EXTREAM') is defined
-        - name: Check if macfuse is installed
-          community.general.homebrew:
+        - name: Check install macfuse
+          community.general.homebrew_cask:
             state: present
-            name: homebrew/cask/macfuse
-          when: macfuseinfo.rc != 0 and lookup('env', 'WS_EXTREAM') is defined
+            name: macfuse
+          environment: '{{ WS_EXTREAM | default ({}) }}'
+          when: intelljdir.rc != 0 and WS_EXTREAM is defined
         - name: Check if VLC is installed
           ansible.builtin.command:
             cmd: test -d /Applications/VLC.app
           register: vlcinfo
           changed_when: vlcinfo.rc != 0
-          when: lookup('env', 'WS_EXTRA') is defined
-        - name: Check if vlc is installed
-          community.general.homebrew:
+          environment: '{{ WS_EXTRA | default ({}) }}'
+          when: WS_EXTRA is defined
+        - name: Install VLC
+          community.general.homebrew_cask:
             state: present
-            name: homebrew/cask/vlc
-          when: vlcinfo.rc != 0 and lookup('env', 'WS_EXTRA') is defined
+            name: vlc
+          environment: '{{ WS_EXTRA | default ({}) }}'
+          when: vlcinfo.rc != 0 and WS_EXTRA is defined
         - name: Check if Loopback is installed
           ansible.builtin.command:
             cmd: test -d /Applications/Loopback.app
           register: loopbackdir
           changed_when: loopbackdir.rc != 0
-          when: vlcinfo.rc != 0 and lookup('env', 'WS_EXTRA') is defined
+          environment: '{{ WS_EXTRA | default ({}) }}'
+          when: WS_EXTRA is defined
         - name: Check if loopback is installed
           community.general.homebrew:
             state: present
             name: loopback
-          when: loopbackdir.rc != 0 and lookup('env', 'WS_EXTRA') is defined
+          environment: '{{ WS_EXTRA | default ({}) }}'
+          when: loopbackdir.rc != 0 and WS_EXTRA is defined
         - name: Set /bin/bash as default shell
           ansible.builtin.command:
             cmd: chsh -s /bin/bash
