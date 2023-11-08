@@ -1,11 +1,13 @@
 # macos-workstation Makefile
+SHELL = /bin/bash
+PYTHON_VERSION=3.12
 
 install-brew:
 	hash brew || /bin/bash -c \
-		"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+		"$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 venv:
-	hash pip || brew install python3-pip
+	hash pip || brew install python$(PYTHON_VERSION)
 	python3 -m pip install --user virtualenv
 	python3 -m virtualenv $@
 

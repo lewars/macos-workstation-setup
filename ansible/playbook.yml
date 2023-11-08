@@ -53,6 +53,7 @@
             state: present
             name: homebrew/cask/google-chrome
           when: googlechromedir.rc != 0
+          # Install chrome here if googlechromedir.rc is not 0
         - name: Install basic homebrew packages
           community.general.homebrew:
             state: latest
@@ -68,7 +69,6 @@
               - git
               - gnu-sed
               - gnu-tar
-              - google-chrome
               - grep
               - gunzip
               - htop
