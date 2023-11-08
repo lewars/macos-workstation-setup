@@ -231,7 +231,7 @@
             name: loopback
           when: loopbackdir.rc != 0 and lookup('env', 'WS_EXTRA') is defined
         - name: Set /bin/bash as default shell
-          community.builtin.command:
+          ansible.builtin.command:
             cmd: chsh -s /bin/bash
           register: shell_change_cmd
           changed_when: shell_change_cmd.rc != 0
