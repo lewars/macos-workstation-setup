@@ -54,6 +54,12 @@
             name: homebrew/cask/google-chrome
           when: googlechromedir.rc != 0
           # Install chrome here if googlechromedir.rc is not 0
+        - name: Install Google Chrome
+          community.general.homebrew:
+            state: latest
+            update_homebrew: true
+            name: google-chrome
+          when: googlechromedir.rc != 0
         - name: Install basic homebrew packages
           community.general.homebrew:
             state: latest
