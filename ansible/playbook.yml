@@ -4,21 +4,36 @@
   gather_facts: true
   tasks:
     - name: Get OS Version
-      ansible.builtin.debug: msg="{{ ansible_distribution }}"
+      ansible.builtin.debug:
+        msg: '{{ ansible_distribution }}'
+    - name: Demo
+      ansible.builtin.file:
+        path: foo
     - name: Create local bin directory
       ansible.builtin.file:
         path: '{{ ansible_env.HOME }}/bin'
         owner: '{{ ansible_env.USER }}'
         state: directory
         mode: "0755"
-    - block:
+    - name: Package Installs
+      block:
         - name: Escalate priviledge for brew
           ansible.builtin.command:
             cmd: /usr/bin/true
+          register: true_cmd
+          changed_when: true_cmd.rc != 0
           become: true
+        - name: Check if Homebrew is installed
+          ansible.builtin.command:
+            cmd: hash brew
+          register: brew_cmd
+          changed_when: brew_cmd.rc != 0
         - name: Install Homebrew
           ansible.builtin.shell:
-            cmd: hash brew 2>/dev/null || NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            cmd: NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          register: brew_install
+          when: brew_cmd.rc != 0
+          changed_when: brew_install.rc != 0
         - name: Tap Jira CLI repository
           community.general.homebrew_tap:
             name: ankitpokhrel/jira-cli
@@ -32,11 +47,14 @@
           ansible.builtin.command:
             cmd: test -d /Applications/Google\ Chrome.app
           register: googlechromedir
-        - community.general.homebrew:
+          changed_when: googlechromedir.rc != 0
+        - name: Check that Google Chrome is installed
+          community.general.homebrew:
             state: present
             name: homebrew/cask/google-chrome
           when: googlechromedir.rc != 0
-        - community.general.homebrew:
+        - name: Install basic homebrew packages
+          community.general.homebrew:
             state: latest
             update_homebrew: true
             name:
@@ -62,7 +80,8 @@
               - unzip
               - yamllint
               - yq
-        - community.general.homebrew:
+        - name: Install plus homebrew package
+          community.general.homebrew:
             state: latest
             update_homebrew: true
             name:
@@ -83,7 +102,8 @@
               - unzip
               - virtualenv
           when: lookup('env', 'WS_PLUS') is defined
-        - community.general.homebrew:
+        - name: Install extra homebrew package
+          community.general.homebrew:
             state: latest
             update_homebrew: true
             name:
@@ -118,7 +138,7 @@
               - yarn
               - yq
           when: lookup('env', 'WS_EXTRA') is defined
-        - name: Clone dotfile repo
+        - name: Clone dotfile repo # noqa: latest
           ansible.builtin.git:
             repo: https://github.com/lewars/dotfiles.git
             dest: '{{ ansible_env.HOME }}/git/dotfiles'
@@ -137,21 +157,32 @@
             path: '{{ ansible_env.HOME }}/bin'
             state: directory
             mode: "0700"
+        - name: Check if Google Cloud CLI is installed
+          ansible.builtin.stat:
+            path: /usr/bin/gcloud
+          register: gcloud
         - name: Download and install gcloud sdk
           ansible.builtin.unarchive:
-            src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-413.0.0-darwin-arm.tar.gz
+            src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-454.0.0-linux-x86_64.tar.gz
             dest: '{{ ansible_env.HOME }}/bin'
             remote_src: true
-          when: lookup('env', 'WS_EXTRA') is defined
+          when: lookup('env', 'WS_EXTRA') is defined and gcloud.stat.exists
         - name: Install gcloud cli
           ansible.builtin.command:
-            cmd: '{{ ansible_env.HOME }}/bin/google-cloud-sdk/install.sh --usage-reporting false --bash-completion true --path-update true --additional-components kubectl -q'
+            cmd: '{{ ansible_env.HOME }}/bin/google-cloud-sdk/install.sh --usage-reporting false --bash-completion true --path-update true --additional-components kubectl -q' # yamllint disable-line rule:line-length
+          register: gcloud_cli
+          changed_when: gcloud_cli.rc != 0
           when: lookup('env', 'WS_EXTRA') is defined
+        - name: Check if IntelliJ\ IDEA.app is installed
+          ansible.builtin.stat:
+            path: /Applications/IntelliJ\ IDEA.app
+          register: intelljapp
         - name: Check if IntelliJ is installed
           ansible.builtin.command:
             cmd: test -d /Applications/IntelliJ\ IDEA.app
           register: intelljdir
-          when: lookup('env', 'WS_CODE') is defined
+          when: lookup('env', 'WS_CODE') is defined and intelljapp != 0
+          changed_when: intelljapp.rc != 0
         - name: Check if Intell J is isntalled
           community.general.homebrew:
             state: present
@@ -161,7 +192,9 @@
           ansible.builtin.command:
             cmd: test -d /Applications/iTerm.app
           register: itermdir
-        - community.general.homebrew:
+          changed_when: itermdir.rc != 0
+        - name: Check if iterm2 is installed
+          community.general.homebrew:
             state: present
             name: homebrew/cask/iterm2
           when: itermdir.rc != 0
@@ -169,8 +202,10 @@
           ansible.builtin.command:
             cmd: brew info macfuse >/dev/null
           register: macfuseinfo
+          changed_when: macfuseinfo.rc != 0
           when: lookup('env', 'WS_EXTREAM') is defined
-        - community.general.homebrew:
+        - name: Check if macfuse is installed
+          community.general.homebrew:
             state: present
             name: homebrew/cask/macfuse
           when: macfuseinfo.rc != 0 and lookup('env', 'WS_EXTREAM') is defined
@@ -178,8 +213,10 @@
           ansible.builtin.command:
             cmd: test -d /Applications/VLC.app
           register: vlcinfo
+          changed_when: vlcinfo.rc != 0
           when: lookup('env', 'WS_EXTRA') is defined
-        - community.general.homebrew:
+        - name: Check if vlc is installed
+          community.general.homebrew:
             state: present
             name: homebrew/cask/vlc
           when: vlcinfo.rc != 0 and lookup('env', 'WS_EXTRA') is defined
@@ -187,8 +224,10 @@
           ansible.builtin.command:
             cmd: test -d /Applications/Loopback.app
           register: loopbackdir
+          changed_when: loopbackdir.rc != 0
           when: vlcinfo.rc != 0 and lookup('env', 'WS_EXTRA') is defined
-        - community.general.homebrew:
+        - name: Check if loopback is installed
+          community.general.homebrew:
             state: present
             name: loopback
           when: loopbackdir.rc != 0 and lookup('env', 'WS_EXTRA') is defined
