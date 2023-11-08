@@ -6,9 +6,6 @@
     - name: Get OS Version
       ansible.builtin.debug:
         msg: '{{ ansible_distribution }}'
-    - name: Demo
-      ansible.builtin.file:
-        path: foo
     - name: Create local bin directory
       ansible.builtin.file:
         path: '{{ ansible_env.HOME }}/bin'
