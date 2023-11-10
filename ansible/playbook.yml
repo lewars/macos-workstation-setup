@@ -66,6 +66,7 @@
             state: latest
             update_homebrew: true
             name:
+              - 1password-cli
               - bash
               - bash-completion@2
               - coreutils
