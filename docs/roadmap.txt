@@ -3,7 +3,7 @@
 ### Goal
 * Holistic setup
 * Quicker setup
-* Supports M1 and non M1 (strech)
+* Supports M1 and non M1 (stretch)
 
 ### Phase 1
 * Insert conditionals for M1 and non-M1
@@ -11,5 +11,3 @@
 * Configure keyboard and mouse
 * Install and configure BetterSnaptools
 * Install and configure Alfred
-
-
